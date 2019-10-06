@@ -127,7 +127,7 @@ the timeouts to your taste.
 
 According to my tests, the 400 mAh battery will last for about 4 hours of continuous operation.
 With default sleep timeout of 60 seconds, a normal interaction time will be around 1.5-2
-minutes, so the battery will last for about 90-120 activations.
+minutes, so the battery will last for about 120-160 activations.
 
 
 ## Author
