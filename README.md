@@ -15,11 +15,14 @@ as well as the drive power level on the fly.
 - Turn the knob to change the value.
 - Rest the knob to apply the change (or push again to cancel).
 
+V1.1 also displays the main battery SOC and the auxiliary 12V battery voltage level on wakeup for
+3 seconds by default (see config to tune). Push the knob to skip, hold the knob to extend.
+
 
 ## Hardware
 
 Did I mention it's just a frontend for an OVMS v3 module? So of course you'll need an OVMS v3.
-The OVMS v3 firmware version should be `3.2.005-51` or higher.
+The OVMS v3 firmware version should be `3.2.008-174` or higher.
 
 And you'll need an unlocked Twizy if you want to use it to change the tuning. The console isn't
 limited to tuning, you could for example use it to change the charge current level and destination
@@ -128,6 +131,9 @@ the timeouts to your taste.
 According to my tests, the 400 mAh battery will last for about 4 hours of continuous operation.
 With default sleep timeout of 60 seconds, a normal interaction time will be around 1.5-2
 minutes, so the battery will last for about 120-160 activations.
+
+From my normal daily use experience, this equals about two months. To extend this, simply
+use a larger battery (but check if it fits into the case).
 
 
 ## Author

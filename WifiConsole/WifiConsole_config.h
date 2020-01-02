@@ -12,9 +12,10 @@ const char* ovmsAPIKey          = "PASSWORD";       // OVMS command apikey, norm
 const int defaultRecupLevel     = 18;               // set to 21 for Twizy45
 
 // User Interface:
-const int sleepTimeout          = 60;               // enter sleep mode after n seconds
+const int sleepTimeout          = 30;               // enter sleep mode after n seconds
 const int dimTimeout            = 5;                // dim display after n seconds
 const int applyTimeout          = 8;                // apply config change after n 1/10 seconds
+const int socTimeout            = 3;                // show SOC on boot for n seconds (button: push/hold)
 
 const int maxButtons            = 10;               // max profile buttons allowed
 

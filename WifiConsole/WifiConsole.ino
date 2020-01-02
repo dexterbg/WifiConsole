@@ -21,12 +21,13 @@
  * 
  * History:
  *  - V1.0  2019-10-05  Michael Balzer <dexter@dexters-web.de>
+ *  - V1.1  2020-01-02  Michael Balzer <dexter@dexters-web.de>
  * 
  * License:
  *  This is free software under GNU Lesser General Public License (LGPL)
  *  https://www.gnu.org/licenses/lgpl.html
  */
-#define APPLICATION "OVMS WifiConsole V1.0 (2019-10-05)"
+#define APPLICATION "OVMS WifiConsole V1.1 (2020-01-02)"
 
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
@@ -132,6 +133,9 @@ struct __attribute__ ((__packed__)) Application {
 
   cfg_profile   profile;                // current tuning parameters
 
+  uint8_t       bat_soc;                // main battery SOC [%]
+  float         aux_volt;               // auxiliary battery voltage [V]
+
 
   /**
    * RTC RAM management:
@@ -167,7 +171,7 @@ struct __attribute__ ((__packed__)) Application {
    *  - returns true if config was updated
    */
   bool readConfig(String info) {
-    bool upd_buttons = false, upd_profile = false;
+    bool upd_buttons = false, upd_profile = false, upd_state = false;
     int p1 = 0, p2, p3;
     String line;
     
@@ -215,16 +219,27 @@ struct __attribute__ ((__packed__)) Application {
           i++;
         }
       }
+      else if (line[0] == 'S') {
+        // main battery SOC: S:<prc>
+        upd_state = true;
+        bat_soc = line.substring(2).toInt();
+      }
+      else if (line[0] == 'A') {
+        // aux battery voltage: A:<volt>
+        upd_state = true;
+        aux_volt = line.substring(2).toFloat();
+      }
     }
 
-    if (upd_buttons || upd_profile)
+    if (upd_buttons || upd_profile || upd_state)
       save();
     
-    Serial.printf("readConfig: %d buttons, sel=%d, recup %d %d, drive %d\n",
+    Serial.printf("readConfig: %d buttons, sel=%d, recup %d %d, drive %d, soc=%d, aux=%f\n",
                   button_cnt, button_sel,
-                  (int)profile.neutral-1, (int)profile.brake-1, (int)profile.drive-1);
+                  (int)profile.neutral-1, (int)profile.brake-1, (int)profile.drive-1,
+                  bat_soc, aux_volt);
     
-    return (upd_buttons || upd_profile);
+    return (upd_buttons || upd_profile || upd_state);
   }
 
   /**
@@ -621,6 +636,16 @@ void setup() {
     
     uint32_t time_update = millis();
     Serial.printf("\nUpdate time: %u ms\n", time_update - time_connect);
+    
+    // Show main SOC & aux voltage:
+    display.clearDisplay();
+    display.printLine(0, 1, "SOC%");
+    display.printLine(11, 3, String(state.bat_soc));
+    display.drawFastHLine(0, 35, 48, WHITE);
+    display.printLine(39, 1, "12V");
+    display.printLine(50, 2, String(state.aux_volt,1));
+    display.display();
+    delay(socTimeout * 1000);
   }
 
   // Init UI:
